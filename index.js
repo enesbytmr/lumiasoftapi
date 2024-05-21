@@ -1,0 +1,46 @@
+const express = require('express');
+const axios = require('axios');
+const app = express();
+const port = process.env.PORT || 3000;
+
+app.use(express.json());
+
+// GET İsteğini Karşılayan Endpoint
+app.get('/download-pdf', async (req, res) => {
+    try {
+        const { receiver, order_number, gift_message } = req.query;
+        
+        const response = await axios.get('http://amzn-gift-message.eastus.azurecontainer.io/download-pdf', {
+            params: {
+                receiver,
+                order_number,
+                gift_message
+            }
+        });
+
+        res.status(response.status).json(response.data);
+    } catch (error) {
+        res.status(error.response?.status || 500).json({ error: error.message });
+    }
+});
+
+// POST İsteğini Karşılayan Endpoint
+app.post('/download-pdf', async (req, res) => {
+    try {
+        const { receiver, order_number, gift_message } = req.body;
+
+        const response = await axios.post('http://amzn-gift-message.eastus.azurecontainer.io/download-pdf', {
+            receiver,
+            order_number,
+            gift_message
+        });
+
+        res.status(response.status).json(response.data);
+    } catch (error) {
+        res.status(error.response?.status || 500).json({ error: error.message });
+    }
+});
+
+app.listen(port, () => {
+    console.log(`Server is running on port ${port}`);
+});
