@@ -1,9 +1,11 @@
 const express = require('express');
 const axios = require('axios');
+const cors = require('cors');
 const app = express();
 const port = process.env.PORT || 3000;
 
 app.use(express.json());
+app.use(cors()); // CORS ayarları ekleniyor
 
 // GET İsteğini Karşılayan Endpoint
 app.get('/download-pdf', async (req, res) => {
@@ -33,6 +35,10 @@ app.post('/download-pdf', async (req, res) => {
             receiver,
             order_number,
             gift_message
+        }, {
+            headers: {
+                'Content-Type': 'application/json'
+            }
         });
 
         res.status(response.status).json(response.data);
