@@ -10,28 +10,20 @@ app.use(cors()); // CORS ayarları ekleniyor
 // GET İsteğini Karşılayan Endpoint
 app.get('/download-pdf', async (req, res) => {
     try {
-        const { receiver, order_number, gift_message } = req.query;
-        
-        const response = await axios.get('http://amzn-gift-message.eastus.azurecontainer.io/download-pdf', {
-            params: {
-                receiver,
-                order_number,
-                gift_message
-            }
-        });
+        const response = await axios.get('http://amzn-gift-message.eastus.azurecontainer.io/download-pdf');
 
-        res.status(response.status).json(response.data);
+        res.status(response.status).json({ message: 'GET request sent successfully', data: response.data });
     } catch (error) {
         res.status(error.response?.status || 500).json({ error: error.message });
     }
 });
 
 // POST İsteğini Karşılayan Endpoint
-app.post('/download-pdf', async (req, res) => {
+app.post('/create-pdf', async (req, res) => {
     try {
         const { receiver, order_number, gift_message } = req.body;
 
-        const response = await axios.post('http://amzn-gift-message.eastus.azurecontainer.io/download-pdf', {
+        const response = await axios.post('http://amzn-gift-message.eastus.azurecontainer.io/create-pdf', {
             receiver,
             order_number,
             gift_message
