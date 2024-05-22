@@ -14,10 +14,10 @@ app.get('/download-pdf', async (req, res) => {
             responseType: 'arraybuffer'
         });
 
-        const filePath = path.join(__dirname, 'downloaded.pdf');
+        const filePath = path.join(__dirname, 'generated_pdf.pdf');
         fs.writeFileSync(filePath, response.data);
 
-        res.download(filePath, 'downloaded.pdf', (err) => {
+        res.download(filePath, 'generated_pdf.pdf', (err) => {
             if (err) {
                 console.error('Error sending the file:', err);
                 res.status(500).send('Error sending the file');
