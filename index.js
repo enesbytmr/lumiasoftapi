@@ -1,6 +1,8 @@
 const express = require('express');
 const axios = require('axios');
 const cors = require('cors');
+const fs = require('fs');
+const path = require('path'); // path modülünü import ediyoruz
 const app = express();
 const port = process.env.PORT || 3000;
 
@@ -14,10 +16,10 @@ app.get('/download-pdf', async (req, res) => {
             responseType: 'arraybuffer'
         });
 
-        const filePath = path.join(__dirname, 'generated_pdf.pdf');
+        const filePath = path.join(__dirname, 'downloaded.pdf');
         fs.writeFileSync(filePath, response.data);
 
-        res.download(filePath, 'generated_pdf.pdf', (err) => {
+        res.download(filePath, 'downloaded.pdf', (err) => {
             if (err) {
                 console.error('Error sending the file:', err);
                 res.status(500).send('Error sending the file');
@@ -27,28 +29,6 @@ app.get('/download-pdf', async (req, res) => {
         });
     } catch (error) {
         console.error('Error downloading the file:', error);
-        res.status(error.response?.status || 500).json({ error: error.message });
-    }
-});
-
-
-// POST İsteğini Karşılayan Endpoint
-app.post('/create-pdf', async (req, res) => {
-    try {
-        const { receiver, order_number, gift_message } = req.body;
-
-        const response = await axios.post('http://amzn-gift-message.eastus.azurecontainer.io/create-pdf', {
-            receiver,
-            order_number,
-            gift_message
-        }, {
-            headers: {
-                'Content-Type': 'application/json'
-            }
-        });
-
-        res.status(response.status).json(response.data);
-    } catch (error) {
         res.status(error.response?.status || 500).json({ error: error.message });
     }
 });
