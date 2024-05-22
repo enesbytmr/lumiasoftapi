@@ -16,22 +16,15 @@ app.get('/download-pdf', async (req, res) => {
             responseType: 'arraybuffer'
         });
 
-        const filePath = path.join(__dirname, 'downloaded.pdf');
-        fs.writeFileSync(filePath, response.data);
-
-        res.download(filePath, 'downloaded.pdf', (err) => {
-            if (err) {
-                console.error('Error sending the file:', err);
-                res.status(500).send('Error sending the file');
-            }
-            // Optionally delete the file after sending it
-            fs.unlinkSync(filePath);
-        });
+        res.setHeader('Content-Disposition', 'attachment; filename=downloaded.pdf');
+        res.setHeader('Content-Type', 'application/pdf');
+        res.send(response.data);
     } catch (error) {
         console.error('Error downloading the file:', error);
         res.status(error.response?.status || 500).json({ error: error.message });
     }
 });
+
 
 app.listen(port, () => {
     console.log(`Server is running on port ${port}`);
